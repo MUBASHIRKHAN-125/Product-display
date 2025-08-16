@@ -144,7 +144,8 @@ const categoriesShow = [
     { id: 3, title: "Pizza" },
     { id: 4, title: "Broast" },
     { id: 4, title: "Tikka" },
-]
+];
+
 
 ///renderCategory//////
 
@@ -155,11 +156,11 @@ const categories = [...new Set(categoriesShow.map(p => p.title))];
 const categoryDisplay = document.getElementById("category");
 
 const renderCategories = () => {
-    category.innerHTML += `<h1 class="text-white text-2xl">Category</h1>`;
+    categoryDisplay.innerHTML += `<h1 class="text-white text-2xl">Category</h1>`;
     categories.forEach(product => {
         categoryDisplay.innerHTML +=
             `<div>
-                    <label for="${product}" class="flex items-center gap-2 cursor-pointer">
+                    <label for="${product}" class="flex items-center gap-2 cursor-pointer ">
                         <input class="cursor-pointer" type="checkbox" id="${product}"  onchange="toggleChip('${product}')">
                         ${product}
                     </label>
@@ -171,10 +172,14 @@ const renderCategories = () => {
 function toggleChip(categoryName) {
 
     const chip = document.getElementById(`${categoryName.toLowerCase()}Chip`);
+    const productCheckBox = document.getElementById(categoryName);
 
     if (chip) {
         chip.style.display = chip.style.display === "flex" ? "none" : "flex";
-    }
+    };
+    if (chip.style.display === "none") {
+        productCheckBox.checked = false;
+    };
 
     const index = filProductStore.indexOf(categoryName);
 
@@ -182,9 +187,18 @@ function toggleChip(categoryName) {
         filProductStore.splice(index, 1);
     } else {
         filProductStore.push(categoryName);
-    }
+    };
 
     renderProduct();
+
+
+    // if (filProductStore.length > 0) {
+    //     currentProducts = products.filter(p => filProductStore.includes(p.category));
+    // } else {
+    //     currentProducts = [...products];
+    // }
+
+    // renderProduct(currentProducts,currentProducts);
 };
 
 renderCategories();
@@ -192,18 +206,19 @@ renderCategories();
 ////=========////
 
 
-
 ///renderProduct//////
 
 const displayProduct = document.getElementById("displayProduct");
 
-const renderProduct = () => {
+const renderProduct = (itemsCat) => {
 
-    let filteredProducts = products;
+    let filteredProducts = itemsCat || products;
 
     if (filProductStore.length > 0) {
-        filteredProducts = products.filter(p => filProductStore.includes(p.category));
-    }
+        filteredProducts = filteredProducts.filter(p => filProductStore.includes(p.category));
+    };
+
+
     let htmlCode = `<div class="grid grid-cols-12 gap-2">`;
 
     filteredProducts.forEach(product => {
@@ -227,60 +242,82 @@ const renderProduct = () => {
     htmlCode += `</div>`;
 
     displayProduct.innerHTML = htmlCode;
-
 };
 
 renderProduct();
 
-////////==========///////////
+////////==========//////////
+
+///Price Range/////
+
+const priceSlide = document.getElementById("priceSlide");
+
+let priceMax = Math.max(...products.map(p => p.price));
+
+let priceMin = Math.min(...products.map(p => p.price));
 
 
 
+priceSlide.innerHTML = ` <div class="flex flex-col">
+                        <input class="cursor-pointer" type="range" id="rangeInput" value="${priceMax}"   min="${priceMin}" max="${priceMax}">
+                        <div class="flex justify-between items-center">
+                            <span>${priceMin}</span>
+                            <span>${priceMax}</span>
+                        </div>
+                       </div>`
+const rangeInput = document.getElementById("rangeInput");
+
+rangeInput.addEventListener("change", () => {
+    const selectedPriceRange = +rangeInput.value;
+
+    let filtered = [...products];
+
+    filtered = filtered.filter(p => p.price <= selectedPriceRange);
+
+    renderProduct(filtered);
+
+});
+
+//////====//////
+
+/////Rating Filter////
+
+const ratingCategory = document.getElementById("ratingCategory");
+let selectedRating = "";
 
 
-// function updateChips(selectedCategories) {
-//     const chipContainer = document.getElementById('chip');
-//     chipContainer.innerHTML = ''; // clear pehle
+ratingCategory.innerHTML = [5, 4, 3, 2, 1]
+    .map(
+        (rating) => `
+        <div class="flex items-center gap-2 cursor-pointer" onclick="onChangeRatingHandler(${rating})">
+            <div class="flex justify-start">
+                ${Array(5)
+                .fill()
+                .map(
+                    (_, i) => `<i class="fa-solid fa-star w-3 h-3 ${i < rating
+                        ? "text-yellow-400"
+                        : "text-gray-300 dark:text-gray-500"
+                        }"></i>
+                `
+                )
+                .join("")}
+            </div>
+            <p class="text-white font-bold">
+                ${rating === 5 ? 5.0 : rating.toFixed(1) + " +"}
+            </p>
+        </div>
+    `
+    )
+    .join("");
 
-//     selectedCategories.forEach(category => {
-//         const button = document.createElement('button');
-//         button.className = "flex items-center justify-center gap-x-1 bg-black rounded-full px-2 py-1";
-//         button.textContent = category;
+function onChangeRatingHandler(rating) {
+    selectedRating = rating;
+    const filtered = products.filter(r => r.rating >= rating);
+    renderProduct(filtered);
+    updateRatingStars()
+};
 
-//         const icon = document.createElement('i');
-//         icon.className = "fa-solid fa-xmark cursor-pointer opacity-80 text-sm";
-//         icon.style.marginLeft = '4px';
-//         icon.onclick = () => {
-//             // jab chip ke cross pe click ho toh us checkbox ko uncheck karo aur chips update karo
-//             document.querySelector(`input[value="${category}"]`).checked = false;
-//             filterProducts();  // fir se filterProducts call karo taake chips and products update ho
-//         };
-
-//         button.appendChild(icon);
-//         chipContainer.appendChild(button);
-//     });
-// }
-
-// function filterProducts() {
-//     const checkedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(input => input.value);
-
-//     // update chips dynamically
-//     updateChips(checkedCategories);
-
-//     if (checkedCategories.length === 0) {
-//         renderProducts(products);
-//     } else {
-//         const filtered = products.filter(p => checkedCategories.includes(p.category));
-//         renderProducts(filtered);
-//     }
-// }
-
-////=========////
-
-
-
-
-
+/////------//////
 
 ////sortALLProduct//////
 
@@ -289,7 +326,6 @@ const listSort = document.getElementById("listSort");
 const showMenu = () => {
     listSort.classList.toggle("hidden");
 };
-
 
 const sortHighToLowPrice = () => {
     const sortingPrice = [...products].sort((a, b) => b.price - a.price);
@@ -338,92 +374,14 @@ document.getElementById("sortingLowtoHighRating").addEventListener("click", sort
 
 
 
-// displayProduct.innerHTML += `
-//          <div class="grid grid-cols-12 gap-2">
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12 border-2 rounded-2xl overflow-hidden">
-//                         <img class="object-cover w-100" src="./image/pizzaImg.jpeg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12  border-2 rounded-2xl overflow-hidden">
-//                         <img class="w-100 h-55 object-fill" src="./image/biryaniImg.jpeg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12  border-2 rounded-2xl overflow-hidden">
-//                         <img class="w-100 object-cover" src="./image/burgerImg.jpeg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12 border-2 rounded-2xl overflow-hidden">
-//                         <img class="w-100 object-cover" src="./image/broastImg.jpeg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12 border-2 rounded-2xl overflow-hidden">
-//                         <img class="w-100 object-cover" src="./image/tikkaImg.jpg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div
-//                         class="h-[420px] lg:col-span-4 md:col-span-6 col-span-12  border-2 rounded-2xl overflow-hidden ">
-//                         <img class="w-100 object-cover " src="./image/tikkaImg.jpg">
-//                         <div class="p-3 flex flex-col justify-between h-50 bg-black text-white">
-//                             <h1 class="text-2xl">Pizza</h1>
-//                             <h1>rating = 5</h1>
-//                             <p>Enjoy the crispy chiken fillet in a soft bun with spicy mayo and our signature sauce
-//                             </p>
-//                             <div class="flex justify-between items-center">
-//                                 <p>$300</p>
-//                                 <i class="fa-solid fa-cart-shopping"></i>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-// `;
-// });
+// <svg
+//     aria-hidden="true"
+// class="w-5 h-5 ${i < rating
+//     ? "text-yellow-400"
+//     : "text-gray-300 dark:text-gray-500"
+//   } ${rating == selectedRating ? "!text-[#ff3d47]" : ""}"
+//             fill="currentColor"
+//             viewBox="0 0 20 20"
+//             xmlns="http://www.w3.org/2000/svg">
+//             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+//         </svg>

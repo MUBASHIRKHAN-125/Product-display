@@ -12,68 +12,52 @@
 <body class="bg-slate-400">
     <div class="grid grid-cols-12 gap-3  p-4">
         <div class="lg:col-span-2 md:col-span-3 col-span-12   flex flex-col gap-2">
-            <div class="border-3 rounded-2xl overflow-hidden h-[93px]"><img class="w-50 h-22 object-cover"
+            <div class="border-3 rounded-2xl overflow-hidden h-[93px]"><img class="w-100 h-25 object-fill  md:w-50 md:h-22 md:object-cover"
                     src="./image/logo1.jpeg"></div>
             <div id="category" class="rounded-2xl border-4 p-3 flex flex-col gap-2 ">
 
             </div>
             <div id="priceRange" class="rounded-2xl border-4 p-3  flex flex-col gap-2">
                 <h1 class="text-white text-2xl">Price Range</h1>
-                <div class="flex flex-col">
-                    <input type="range" id="range" value="100">
-                    <div class="flex justify-between items-center">
-                        <span>0</span>
-                        <span>100</span>
-                    </div>
+                <div id="priceSlide">
+                   
                 </div>
             </div>
             <div class=" rounded-2xl border-4 p-3  flex flex-col gap-2">
                 <h1 class="text-white text-2xl">Rating</h1>
-                <div class="text-[20px]">
-                    <p>**********</p>
-                </div>
-                <div class="text-[20px]">
-                    <p>*******</p>
-                </div>
-                <div class="text-[20px]">
-                    <p>******</p>
-                </div>
-                <div class="text-[20px]">
-                    <p>***</p>
-                </div>
-                <div class="text-[20px]">
-                    <p>**</p>
-                </div>
+              <div id="ratingCategory" class="pt-2">
+
+              </div>
             </div>
         </div>
         <div class="lg:col-span-10 md:col-span-9  col-span-12">
             <div class="gridgrid-rows-[auto_1fr] p-2">
                 <div class="row-span-1 flex items-center justify-between p-4 ">
-                    <div id="chip" class="items-center gap-x-2 text-white flex">
+                    <div id="chip" class="items-center md:gap-x-2 text-white flex flex-wrap gap-2">
                         <button id="pizzaChip"
-                            class=" items-center justify-center gap-x-1 bg-black rounded-full px-2 py-1 hidden">
+                            class="w-[120px] hidden items-center justify-between px-4  bg-black rounded-full  py-2  ">
                             Pizza
-                            <i onclick="iconDelete()" class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
+                            <i onclick="toggleChip('Pizza')"  class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
                         </button>
                         <button id="biryaniChip"
-                            class="hidden items-center justify-center  bg-black  rounded-full px-2 py-1  gap-x-1">
+                            class="w-[120px] hidden items-center justify-between px-4  bg-black rounded-full  py-2  ">
                             Biryani
-                            <i onclick="iconDelete()" class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
+                            <i  onclick="toggleChip('Biryani')"  class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
                         </button>
                         <button id="burgerChip"
-                            class="hidden items-center justify-center  bg-black rounded-full px-2 py-1  gap-x-1">
+                            class="w-[120px] hidden items-center justify-between px-4  bg-black rounded-full  py-2  ">
                             Burger
-                            <i onclick="iconDelete()" class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
+                            <i  onclick="toggleChip('Burger')"  class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
                         </button>
                         <button id="broastChip"
-                            class="hidden items-center justify-center  bg-black  rounded-full px-2 py-1  gap-x-1">
+                            class="w-[120px] hidden items-center justify-between px-4  bg-black rounded-full  py-2  ">
                             Broast
-                            <i onclick="iconDelete()" class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
+                            <i  onclick="toggleChip('Broast')"  class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm"></i>
                         </button>
                         <button id="tikkaChip"
-                            class="hidden items-center justify-center  bg-black rounded-full px-2 py-1  gap-x-1">
+                            class="w-[120px] hidden items-center justify-between px-4  bg-black rounded-full  py-2  ">
                             Tikka
-                            <i onclick="iconDelete()" class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm "></i>
+                            <i onclick="toggleChip('Tikka')"  class="fa-solid fa-xmark cursor-pointer opacity-80 text-sm "></i>
                         </button>
                     </div>
                     <div id="sort" class="relative  bg-black py-1 px-2 rounded-[10px]">
